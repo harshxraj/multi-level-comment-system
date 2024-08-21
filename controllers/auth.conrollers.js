@@ -15,11 +15,8 @@ export const registerUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 5);
-
     const newUser = new User({ fullname, email, password: hashedPassword });
-
     const user = await newUser.save();
-
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     const dataToSend = {
       email: user.email,
@@ -37,7 +34,6 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
-
     if (!existingUser) {
       return res.status(404).json({ error: "User not found!" });
     }
@@ -49,7 +45,6 @@ export const loginUser = async (req, res) => {
       if (!result) {
         return res.status(403).json({ error: "Incorrect password!" });
       }
-
       const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SECRET);
       const dataToSend = {
         email: existingUser.email,

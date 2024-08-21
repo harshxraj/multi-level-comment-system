@@ -50,14 +50,7 @@ export const getComments = async (req, res) => {
       { $sort: { [sortBy]: sortOrder === "asc" ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: parseInt(pageSize) },
-      {
-        $lookup: {
-          from: "comments",
-          localField: "_id",
-          foreignField: "parentCommentId",
-          as: "replies",
-        },
-      },
+
       { $addFields: { replies: { $slice: ["$replies", 2] } } }, // Limit replies to 2
     ]);
     res.status(200).json(comments);
